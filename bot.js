@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 const { Client } = require('discord.js');
 const DriveReader = require('./drive-reader');
 const Overview = require('./messages/overview');
+const Search = require('./messages/search');
 
 dotenv.config();
 const client = new Client();
@@ -34,6 +35,25 @@ client.on('message', (message) => {
           message.channel.send(hordeEmbed);
           message.channel.send(allianceEmbed);
         }
+      });
+  } else if (message.content.startsWith('!search')) {
+    // TODO: limit it to specific channel?
+    const arguments = message.content.split(' ');
+
+    if (arguments.length < 2) {
+      message.channel.send(
+        'Please provide a raid to search for, like: "!search mc".'
+      );
+      return;
+    }
+
+    DriveReader.getRaidData()
+      .catch((err) => {
+        console.error('err:', err);
+      })
+      .then((data) => {
+        const embed = Search.createEmbed(data, arguments[1]);
+        message.channel.send(embed);
       });
   }
 });

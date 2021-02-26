@@ -1,8 +1,8 @@
 const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
-let jsonData = require('./credentials.json');
-let token = require('./token.json');
+const credentialsJson = require('./credentials.json');
+const tokenJson = require('./token.json');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
@@ -13,10 +13,10 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 
 module.exports = {
   getRaidData: async function () {
-    if (!jsonData) {
+    if (!credentialsJson) {
       return console.error('Error loading credentials file');
     }
-    const auth = authorize(jsonData);
+    const auth = authorize(credentialsJson);
     return fetchSheetsData(auth);
   },
 };
@@ -30,46 +30,14 @@ function authorize(credentials) {
   );
 
   // Check if we have previously stored a token.
-  if (!token) {
-    return getNewToken(oAuth2Client, callback);
+  if (!tokenJson) {
+    console.error(
+      'token.json not found, use generate-token.js to generate a token file.'
+    );
+    return null;
   }
-  oAuth2Client.setCredentials(token);
+  oAuth2Client.setCredentials(tokenJson);
   return oAuth2Client;
-}
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getNewToken(oAuth2Client, callback) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
-  });
-  console.log('Authorize this app by visiting this url:', authUrl);
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  rl.question('Enter the code from that page here: ', (code) => {
-    rl.close();
-    oAuth2Client.getToken(code, (err, token) => {
-      if (err)
-        return console.error(
-          'Error while trying to retrieve access token',
-          err
-        );
-      oAuth2Client.setCredentials(token);
-      // Store the token to disk for later program executions
-      fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-        if (err) return console.error(err);
-        console.log('Token stored to', TOKEN_PATH);
-      });
-      callback(oAuth2Client);
-    });
-  });
 }
 
 async function fetchSheetsData(auth) {

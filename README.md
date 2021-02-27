@@ -10,4 +10,4 @@ A discord bot that shows raid time table information from google sheets.
   * BOT_TOKEN=
   * SPREADSHEET_ID=
   * SEARCH_CHANNEL_ID=
-3. run 'node bot.js' to start the bot.
+1. run 'node bot.js' to start the bot.

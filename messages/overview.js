@@ -1,5 +1,6 @@
 const _ = require('underscore-node');
 const { MessageEmbed } = require('discord.js');
+const Formatter = require('./formatter');
 
 module.exports = {
   createEmbed: function (data, day, faction) {
@@ -40,21 +41,19 @@ module.exports = {
       return x.type.toLowerCase() === 'sr';
     });
     const otherData = filteredData.filter((x) => {
-      return x.type.toLowerCase() === 'gdkp' && x.type.toLowerCase() !== 'sr';
+      return x.type.toLowerCase() !== 'gdkp' && x.type.toLowerCase() !== 'sr';
     });
 
     // *******************************
     // Build message content from here
     // *******************************
-
     if (gdkpData.length > 0) {
       description += '__**GDKP RAIDS**__\n';
     }
     let gdkpSplitted = _.groupBy(gdkpData, 'raid');
     for (const [, raids] of Object.entries(gdkpSplitted)) {
       for (let i = 0; i < raids.length; i++) {
-        const emote = raids[i].emote ? `${raids[i].emote} ` : '';
-        description += `${emote}**[${raids[i].organizer}](${raids[i].link})** - ${raids[i].time} - ${raids[i].raid}\n`;
+        description += Formatter.getRaidText(raids[i]);
         raidAmount++;
       }
       description += `\n`;
@@ -69,8 +68,7 @@ module.exports = {
     let srSplitted = _.groupBy(srData, 'raid');
     for (const [, raids] of Object.entries(srSplitted)) {
       for (let i = 0; i < raids.length; i++) {
-        const emote = raids[i].emote ? `${raids[i].emote} ` : '';
-        description += `${emote}**[${raids[i].organizer}](${raids[i].link})** - ${raids[i].time} - ${raids[i].raid}\n`;
+        description += Formatter.getRaidText(raids[i]);
         raidAmount++;
       }
       description += `\n`;
@@ -85,8 +83,7 @@ module.exports = {
     let otherSplitted = _.groupBy(otherData, 'raid');
     for (const [, raids] of Object.entries(otherSplitted)) {
       for (let i = 0; i < raids.length; i++) {
-        const emote = raids[i].emote ? `${raids[i].emote} ` : '';
-        description += `${emote}**[${raids[i].organizer}](${raids[i].link})** - ${raids[i].time} - ${raids[i].raid}\n`;
+        description += Formatter.getRaidText(raids[i]);
         raidAmount++;
       }
       description += `\n`;

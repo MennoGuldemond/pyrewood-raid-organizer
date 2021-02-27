@@ -1,5 +1,6 @@
 const _ = require('underscore-node');
 const { MessageEmbed } = require('discord.js');
+const Formatter = require('./formatter');
 
 module.exports = {
   createEmbed: function (data, raid) {
@@ -21,12 +22,10 @@ module.exports = {
     // *******************************
     // Build message content from here
     // *******************************
-
     for (const [day, raids] of Object.entries(splittedByDay)) {
       description += `**${day}**\n`;
       for (let i = 0; i < raids.length; i++) {
-        const emote = raids[i].emote ? `${raids[i].emote} ` : '';
-        description += `${emote}**[${raids[i].organizer}](${raids[i].link})** - ${raids[i].time} - ${raids[i].raid}\n`;
+        description += Formatter.getRaidText(raids[i]);
         raidAmount++;
       }
       description += `\n`;

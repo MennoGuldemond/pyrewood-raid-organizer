@@ -36,7 +36,7 @@ async function fetchSheetsData(auth) {
   const result = await sheets.spreadsheets.values
     .get({
       spreadsheetId: '1zBLV3u8JanX-hmiGRgij3ERdyPUyLIa9TyPtbpEYsL8',
-      range: 'A:H',
+      range: 'A:J',
     })
     .then((result) => {
       return result;
@@ -54,7 +54,9 @@ async function fetchSheetsData(auth) {
         time: row[4],
         organizer: row[5],
         link: row[6],
-        emote: row[7],
+        cut: row[7],
+        signUp: row[8],
+        sheet: row[9],
       };
       raidData.push(rowData);
     });

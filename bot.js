@@ -37,7 +37,9 @@ client.on('message', (message) => {
         }
       });
   } else if (message.content.startsWith('!search')) {
-    // TODO: limit it to specific channel?
+    if (message.channel.id != process.env.SEARCH_CHANNEL_ID) {
+      return;
+    }
     const arguments = message.content.split(' ');
 
     if (arguments.length < 2) {

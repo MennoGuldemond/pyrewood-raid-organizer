@@ -56,7 +56,8 @@ module.exports = {
       embed.setTitle(`No raids found`);
       description = `No raids were found that match your search.`;
     } else {
-      embed.setTitle(`Raids for raid: ${raid}`);
+      const raidName = splittedByDay[0].raid;
+      embed.setTitle(`Raids for: ${raidName}`);
     }
 
     embed.setDescription(description);

@@ -2,6 +2,16 @@ const _ = require('underscore-node');
 const { MessageEmbed } = require('discord.js');
 const Formatter = require('./formatter');
 
+const daysOfWeek = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
+];
+
 module.exports = {
   createEmbed: function (data, raid) {
     const embed = new MessageEmbed();
@@ -16,8 +26,18 @@ module.exports = {
     // Sort by time
     filteredData.sort((a, b) => (a.time > b.time ? 1 : -1));
 
+    // Sort by day
+    let sortedByDay = [];
+    for (let i = 0; i < daysOfWeek.length; i++) {
+      for (let j = 0; j < filteredData.length; j++) {
+        if (daysOfWeek[i] === filteredData[j].day.toLocaleLowerCase()) {
+          sortedByDay.push(filteredData[j]);
+        }
+      }
+    }
+
     // Group by day
-    let splittedByDay = _.groupBy(filteredData, 'day');
+    let splittedByDay = _.groupBy(sortedByDay, 'day');
 
     // *******************************
     // Build message content from here

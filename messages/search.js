@@ -14,21 +14,9 @@ const daysOfWeek = [
 
 module.exports = {
   createEmbed: function (data, raid, faction) {
-    const embed = new MessageEmbed();
+    const embed = Formatter.getFactionEmbed(faction);
     let description = '';
     let raidAmount = 0;
-
-    // Set horde/alliance style
-    const isHorde = faction.toLowerCase() === 'horde';
-    if (isHorde) {
-      embed.setColor(0x8c1616);
-      embed.attachFiles(['./assets/Horde.png']);
-      embed.setThumbnail('attachment://Horde.png');
-    } else {
-      embed.setColor(0x162c57);
-      embed.attachFiles(['./assets/Alliance.png']);
-      embed.setThumbnail('attachment://Alliance.png');
-    }
 
     // Filter out irrelevant data
     const filteredData = data.filter((x) => {

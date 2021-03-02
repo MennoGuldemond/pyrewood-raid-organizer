@@ -54,8 +54,14 @@ client.on('message', (message) => {
         console.error('err:', err);
       })
       .then((data) => {
-        const embed = Search.createEmbed(data, arguments[1]);
-        message.channel.send(embed);
+        const hordeEmbed = Search.createEmbed(data, arguments[1], 'Horde');
+        const allianceEmbed = Search.createEmbed(
+          data,
+          arguments[1],
+          'Alliance'
+        );
+        message.channel.send(hordeEmbed);
+        message.channel.send(allianceEmbed);
       });
   }
 });

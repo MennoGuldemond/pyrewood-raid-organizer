@@ -1,8 +1,10 @@
+const _ = require('underscore-node');
 const dotenv = require('dotenv');
 const { Client } = require('discord.js');
 const DriveReader = require('./drive-reader');
 const Overview = require('./messages/overview');
 const Search = require('./messages/search');
+const Raids = require('./raids');
 
 dotenv.config();
 const client = new Client();
@@ -49,17 +51,28 @@ client.on('message', (message) => {
       return;
     }
 
+    // Check if raid exists
+    const searchTerm = arguments[1];
+    let found = false;
+    Raids.all.forEach((raid) => {
+      if (raid.key.toLowerCase() === searchTerm.toLowerCase()) {
+        found = true;
+      }
+    });
+    if (!found) {
+      message.channel.send(
+        `The raid you are looking for does not exist. ${message.author}\nPlease use one of the following search terms:\nMC / BWL / AQ40 / Nax`
+      );
+      return;
+    }
+
     DriveReader.getRaidData()
       .catch((err) => {
         console.error('err:', err);
       })
       .then((data) => {
-        const hordeEmbed = Search.createEmbed(data, arguments[1], 'Horde');
-        const allianceEmbed = Search.createEmbed(
-          data,
-          arguments[1],
-          'Alliance'
-        );
+        const hordeEmbed = Search.createEmbed(data, searchTerm, 'Horde');
+        const allianceEmbed = Search.createEmbed(data, searchTerm, 'Alliance');
         message.channel.send(hordeEmbed);
         message.channel.send(allianceEmbed);
       });

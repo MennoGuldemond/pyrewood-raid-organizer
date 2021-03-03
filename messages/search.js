@@ -39,13 +39,52 @@ module.exports = {
       }
     }
 
+    const gdkpData = sortedByDay.filter((x) => {
+      return x.type.toLowerCase() === 'gdkp';
+    });
+    const srData = sortedByDay.filter((x) => {
+      return x.type.toLowerCase() === 'sr';
+    });
+    const otherData = sortedByDay.filter((x) => {
+      return x.type.toLowerCase() !== 'gdkp' && x.type.toLowerCase() !== 'sr';
+    });
+
     // Group by day
-    let splittedByDay = _.groupBy(sortedByDay, 'day');
+    let gdkpByDay = _.groupBy(gdkpData, 'day');
+    let srByDay = _.groupBy(srData, 'day');
+    let otherByDay = _.groupBy(otherData, 'day');
 
     // *******************************
     // Build message content from here
     // *******************************
-    for (const [day, raids] of Object.entries(splittedByDay)) {
+    if (gdkpData.length > 0) {
+      description += '__**GDKP RAIDS**__\n';
+    }
+    for (const [day, raids] of Object.entries(gdkpByDay)) {
+      description += `**${day}**\n`;
+      for (let i = 0; i < raids.length; i++) {
+        description += Formatter.getRaidText(raids[i]);
+        raidAmount++;
+      }
+      description += `\n`;
+    }
+
+    if (srData.length > 0) {
+      description += '__**SR RAIDS**__\n';
+    }
+    for (const [day, raids] of Object.entries(srByDay)) {
+      description += `**${day}**\n`;
+      for (let i = 0; i < raids.length; i++) {
+        description += Formatter.getRaidText(raids[i]);
+        raidAmount++;
+      }
+      description += `\n`;
+    }
+
+    if (otherData.length > 0) {
+      description += '__**Other RAIDS**__\n';
+    }
+    for (const [day, raids] of Object.entries(otherByDay)) {
       description += `**${day}**\n`;
       for (let i = 0; i < raids.length; i++) {
         description += Formatter.getRaidText(raids[i]);

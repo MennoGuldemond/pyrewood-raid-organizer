@@ -61,7 +61,9 @@ client.on('message', (message) => {
     });
     if (!found) {
       message.channel.send(
-        `The raid you are looking for does not exist. ${message.author}\nPlease use one of the following search terms:\nMC / BWL / AQ40 / Nax`
+        `The raid you are looking for does not exist. ${
+          message.author
+        }\nPlease use one of the following search terms:\n${Raids.formattedAsString()}`
       );
       return;
     }

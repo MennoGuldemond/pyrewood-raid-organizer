@@ -1,12 +1,21 @@
 module.exports = {
+  // Alternatives must be lowercase
   all: [
-    { key: 'MC', name: 'Molten Core' },
-    { key: 'Ony', name: 'Onyxia' },
-    { key: 'BWL', name: 'Blackwing Lair' },
-    { key: 'ZG', name: "Zul'Gurub" },
-    { key: 'AQ20', name: "The Ruins of Ahn'Qiraj" },
-    { key: 'AQ40', name: "Temple of Ahn'Qiraj" },
-    { key: 'Nax', name: 'Naxxramas' },
+    { key: 'MC', name: 'Molten Core', alternatives: ['molten core'] },
+    { key: 'Ony', name: 'Onyxia', alternatives: ['onyxia'] },
+    { key: 'BWL', name: 'Blackwing Lair', alternatives: ['blackwing lair'] },
+    { key: 'ZG', name: "Zul'Gurub", alternatives: ["zul'gurub", 'zulgurub'] },
+    {
+      key: 'AQ20',
+      name: "the ruins of ahn'qiraj",
+      alternatives: ["the ruins of ahn'qiraj"],
+    },
+    {
+      key: 'AQ40',
+      name: "Temple of Ahn'Qiraj",
+      alternatives: ["temple of ahn'qiraj"],
+    },
+    { key: 'Nax', name: 'Naxxramas', alternatives: ['naxxramas', 'naxx'] },
   ],
   formattedAsString: function () {
     let text = '';
@@ -18,6 +27,4 @@ module.exports = {
     }
     return text;
   },
-  // TODO: add support for alternative spellings
-  // Need to take into consideration that sheet data only has one name/spelling.
 };

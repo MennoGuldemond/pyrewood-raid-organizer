@@ -56,10 +56,14 @@ client.on('message', (message) => {
     }
 
     // Check if raid exists
-    const searchTerm = arguments[1];
+    let searchTerm = arguments.slice(1).join().replace(',', ' ');
     let found = false;
     Raids.all.forEach((raid) => {
-      if (raid.key.toLowerCase() === searchTerm.toLowerCase()) {
+      if (
+        raid.key.toLowerCase() === searchTerm.toLowerCase() ||
+        raid.alternatives.includes(searchTerm.toLowerCase())
+      ) {
+        searchTerm = raid.key.toLowerCase();
         found = true;
       }
     });

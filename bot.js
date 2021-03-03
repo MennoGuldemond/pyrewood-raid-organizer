@@ -8,6 +8,7 @@ const Raids = require('./raids');
 
 dotenv.config();
 const client = new Client();
+const isTestMode = true;
 
 const channels = {
   c814826044283813988: 'Monday',
@@ -30,7 +31,10 @@ client.on('message', (message) => {
         console.error('err:', err);
       })
       .then((data) => {
-        const day = channels[`c${message.channel.id}`];
+        let day = channels[`c${message.channel.id}`];
+        if (isTestMode === true) {
+          day = 'Thursday';
+        }
         if (day) {
           const hordeEmbed = Overview.createEmbed(data, day, 'Horde');
           const allianceEmbed = Overview.createEmbed(data, day, 'Alliance');
@@ -39,7 +43,7 @@ client.on('message', (message) => {
         }
       });
   } else if (message.content.startsWith('!search')) {
-    if (message.channel.id != process.env.SEARCH_CHANNEL_ID) {
+    if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
       return;
     }
     const arguments = message.content.split(' ');
@@ -81,4 +85,8 @@ client.on('message', (message) => {
   }
 });
 
-client.login(process.env.BOT_TOKEN);
+if (isTestMode === true) {
+  client.login(process.env.BOT_TOKEN_TEST);
+} else {
+  client.login(process.env.BOT_TOKEN);
+}

@@ -1,7 +1,7 @@
 {
   "name": "raid-organizer",
   "version": "1.0.0",
-  "description": "",
+  "description": "A discord bot that shows raid time table information from google sheets.",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

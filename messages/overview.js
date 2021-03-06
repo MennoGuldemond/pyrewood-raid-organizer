@@ -36,8 +36,8 @@ module.exports = {
     for (let i = 0; i < descriptions.length; i++) {
       const embed = Formatter.getFactionEmbed(faction);
       embed.setDescription(descriptions[i]);
-      if (descriptions.length < 2 && descriptions[0].length < 10) {
-        embed.setTitle(`No raids found`);
+      if (descriptions.length < 2 && descriptions[0].length < 30) {
+        embed.setTitle(`No ${faction} raids found for ${day}`);
       } else {
         // If the message was cut up into multiple lines, show part numbers in title.
         if (descriptions.length > 1) {

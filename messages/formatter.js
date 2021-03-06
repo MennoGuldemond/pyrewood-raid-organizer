@@ -22,7 +22,7 @@ module.exports = {
     }
     return embed;
   },
-  getSearchDescriptions: function (gdkpData, srData, otherData, sortedByDay) {
+  getSearchDescriptions: function (gdkpData, srData, otherData) {
     const maxDescriptionLength = 1600;
     let descriptionTexts = [];
     let description = '';
@@ -152,7 +152,7 @@ module.exports = {
 
     // Message for when there are no raids found
     if (raidAmount < 1) {
-      description = `No ${faction} raids are planned yet.`;
+      description = `No raids are planned yet.`;
     }
 
     descriptionTexts.push(description);

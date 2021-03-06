@@ -25,8 +25,13 @@ client.on('ready', () => {
 });
 
 client.on('message', (message) => {
+  if (message.content[0] !== '!') {
+    return;
+  }
+  const command = message.content.split(' ')[0].toLowerCase();
+
   // ******** POST ********
-  if (message.content === '!post') {
+  if (command === '!post') {
     DriveReader.getRaidData()
       .catch((err) => {
         console.error('err:', err);
@@ -48,7 +53,7 @@ client.on('message', (message) => {
         }
       });
     // ******** SEARCH ********
-  } else if (message.content.startsWith('!search')) {
+  } else if (command === '!search') {
     if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
       return;
     }

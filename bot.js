@@ -9,7 +9,7 @@ const packageJson = require('./package.json');
 
 dotenv.config();
 const client = new Client();
-const isTestMode = true;
+const isTestMode = false;
 
 const channels = {
   c814826044283813988: 'Monday',

@@ -5,6 +5,7 @@ const DriveReader = require('./drive-reader');
 const Overview = require('./messages/overview');
 const Search = require('./messages/search');
 const Raids = require('./raids');
+const packageJson = require('./package.json');
 
 dotenv.config();
 const client = new Client();
@@ -105,6 +106,12 @@ client.on('message', (message) => {
           message.channel.send(allianceEmbeds[i]);
         }
       });
+  } else if (command === '!version') {
+    if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
+      return;
+    }
+    const versionString = `The Raid Organizer bot current version is ${packageJson.version}`;
+    message.channel.send(versionString);
   }
 });
 

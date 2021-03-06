@@ -8,7 +8,7 @@ const Raids = require('./raids');
 
 dotenv.config();
 const client = new Client();
-const isTestMode = false;
+const isTestMode = true;
 
 const channels = {
   c814826044283813988: 'Monday',
@@ -25,6 +25,7 @@ client.on('ready', () => {
 });
 
 client.on('message', (message) => {
+  // ******** POST ********
   if (message.content === '!post') {
     DriveReader.getRaidData()
       .catch((err) => {
@@ -36,12 +37,17 @@ client.on('message', (message) => {
           day = 'Thursday';
         }
         if (day) {
-          const hordeEmbed = Overview.createEmbed(data, day, 'Horde');
-          const allianceEmbed = Overview.createEmbed(data, day, 'Alliance');
-          message.channel.send(hordeEmbed);
-          message.channel.send(allianceEmbed);
+          const hordeEmbeds = Overview.createEmbeds(data, day, 'Horde');
+          for (let i = 0; i < hordeEmbeds.length; i++) {
+            message.channel.send(hordeEmbeds[i]);
+          }
+          const allianceEmbeds = Overview.createEmbeds(data, day, 'Alliance');
+          for (let i = 0; i < allianceEmbeds.length; i++) {
+            message.channel.send(allianceEmbeds[i]);
+          }
         }
       });
+    // ******** SEARCH ********
   } else if (message.content.startsWith('!search')) {
     if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
       return;
@@ -81,10 +87,18 @@ client.on('message', (message) => {
         console.error('err:', err);
       })
       .then((data) => {
-        const hordeEmbed = Search.createEmbed(data, searchTerm, 'Horde');
-        const allianceEmbed = Search.createEmbed(data, searchTerm, 'Alliance');
-        message.channel.send(hordeEmbed);
-        message.channel.send(allianceEmbed);
+        const hordeEmbeds = Search.createEmbeds(data, searchTerm, 'Horde');
+        for (let i = 0; i < hordeEmbeds.length; i++) {
+          message.channel.send(hordeEmbeds[i]);
+        }
+        const allianceEmbeds = Search.createEmbeds(
+          data,
+          searchTerm,
+          'Alliance'
+        );
+        for (let i = 0; i < allianceEmbeds.length; i++) {
+          message.channel.send(allianceEmbeds[i]);
+        }
       });
   }
 });

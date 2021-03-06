@@ -3,13 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const Formatter = require('./formatter');
 
 module.exports = {
-  createEmbed: function (data, day, faction) {
-    const embed = Formatter.getFactionEmbed(faction);
-    let description = '';
-    let raidAmount = 0;
-
-    embed.setTitle(` ${faction} Raid Schedule - ${day}`);
-
+  createEmbeds: function (data, day, faction) {
     // Filter out irrelevant data
     const filteredData = data.filter((x) => {
       return (
@@ -32,57 +26,33 @@ module.exports = {
       return x.type.toLowerCase() !== 'gdkp' && x.type.toLowerCase() !== 'sr';
     });
 
-    // *******************************
-    // Build message content from here
-    // *******************************
-    if (gdkpData.length > 0) {
-      description += '__**GDKP RAIDS**__\n';
-    }
-    let gdkpSplitted = _.groupBy(gdkpData, 'raid');
-    for (const [, raids] of Object.entries(gdkpSplitted)) {
-      for (let i = 0; i < raids.length; i++) {
-        description += Formatter.getRaidText(raids[i]);
-        raidAmount++;
+    const descriptions = Formatter.getPostDescriptions(
+      gdkpData,
+      srData,
+      otherData
+    );
+
+    const embeds = [];
+    for (let i = 0; i < descriptions.length; i++) {
+      const embed = Formatter.getFactionEmbed(faction);
+      embed.setDescription(descriptions[i]);
+      if (descriptions.length < 2 && descriptions[0].length < 10) {
+        embed.setTitle(`No raids found`);
+      } else {
+        // If the message was cut up into multiple lines, show part numbers in title.
+        if (descriptions.length > 1) {
+          embed.setTitle(
+            `${faction} Raid Schedule - ${day} - ${i + 1}/${
+              descriptions.length
+            }`
+          );
+        } else {
+          embed.setTitle(`${faction} Raid Schedule - ${day}`);
+        }
       }
-      description += `\n`;
-    }
-    if (gdkpData.length > 0) {
-      description += '\n';
+      embeds.push(embed);
     }
 
-    if (srData.length > 0) {
-      description += '__**SR RAIDS**__\n';
-    }
-    let srSplitted = _.groupBy(srData, 'raid');
-    for (const [, raids] of Object.entries(srSplitted)) {
-      for (let i = 0; i < raids.length; i++) {
-        description += Formatter.getRaidText(raids[i]);
-        raidAmount++;
-      }
-      description += `\n`;
-    }
-    if (srData.length > 0) {
-      description += '\n';
-    }
-
-    if (otherData.length > 0) {
-      description += '__**Other RAIDS**__\n';
-    }
-    let otherSplitted = _.groupBy(otherData, 'raid');
-    for (const [, raids] of Object.entries(otherSplitted)) {
-      for (let i = 0; i < raids.length; i++) {
-        description += Formatter.getRaidText(raids[i]);
-        raidAmount++;
-      }
-      description += `\n`;
-    }
-
-    // Message for when there are no raids found
-    if (raidAmount < 1) {
-      description = `No ${faction} raids are planned yet.`;
-    }
-
-    embed.setDescription(description);
-    return embed;
+    return embeds;
   },
 };

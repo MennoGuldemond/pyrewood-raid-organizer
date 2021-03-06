@@ -13,11 +13,7 @@ const daysOfWeek = [
 ];
 
 module.exports = {
-  createEmbed: function (data, raid, faction) {
-    const embed = Formatter.getFactionEmbed(faction);
-    let description = '';
-    let raidAmount = 0;
-
+  createEmbeds: function (data, raid, faction) {
     // Filter out irrelevant data
     const filteredData = data.filter((x) => {
       return (
@@ -49,61 +45,34 @@ module.exports = {
       return x.type.toLowerCase() !== 'gdkp' && x.type.toLowerCase() !== 'sr';
     });
 
-    // Group by day
-    let gdkpByDay = _.groupBy(gdkpData, 'day');
-    let srByDay = _.groupBy(srData, 'day');
-    let otherByDay = _.groupBy(otherData, 'day');
+    const descriptions = Formatter.getSearchDescriptions(
+      gdkpData,
+      srData,
+      otherData,
+      sortedByDay
+    );
 
-    // *******************************
-    // Build message content from here
-    // *******************************
-    if (gdkpData.length > 0) {
-      description += '__**GDKP RAIDS**__\n';
-    }
-    for (const [day, raids] of Object.entries(gdkpByDay)) {
-      description += `**${day}**\n`;
-      for (let i = 0; i < raids.length; i++) {
-        description += Formatter.getRaidText(raids[i]);
-        raidAmount++;
+    const embeds = [];
+    for (let i = 0; i < descriptions.length; i++) {
+      const embed = Formatter.getFactionEmbed(faction);
+      embed.setDescription(descriptions[i]);
+      if (descriptions.length < 2 && descriptions[0].length < 10) {
+        embed.setTitle(`No raids found`);
+        description = `No ${raid} raids were found for the ${faction}`;
+      } else {
+        const raidName = sortedByDay[0].raid;
+        // If the message was cut up into multiple lines, show part numbers in title.
+        if (descriptions.length > 1) {
+          embed.setTitle(
+            `${raidName} raids for ${faction} - ${i + 1}/${descriptions.length}`
+          );
+        } else {
+          embed.setTitle(`${raidName} raids for ${faction}`);
+        }
       }
-      description += `\n`;
+      embeds.push(embed);
     }
 
-    if (srData.length > 0) {
-      description += '__**SR RAIDS**__\n';
-    }
-    for (const [day, raids] of Object.entries(srByDay)) {
-      description += `**${day}**\n`;
-      for (let i = 0; i < raids.length; i++) {
-        description += Formatter.getRaidText(raids[i]);
-        raidAmount++;
-      }
-      description += `\n`;
-    }
-
-    if (otherData.length > 0) {
-      description += '__**Other RAIDS**__\n';
-    }
-    for (const [day, raids] of Object.entries(otherByDay)) {
-      description += `**${day}**\n`;
-      for (let i = 0; i < raids.length; i++) {
-        description += Formatter.getRaidText(raids[i]);
-        raidAmount++;
-      }
-      description += `\n`;
-    }
-
-    // Message for when there are no raids found
-
-    if (raidAmount < 1) {
-      embed.setTitle(`No raids found`);
-      description = `No ${raid} raids were found for the ${faction}`;
-    } else {
-      const raidName = sortedByDay[0].raid;
-      embed.setTitle(`${raidName} raids for ${faction}`);
-    }
-
-    embed.setDescription(description);
-    return embed;
+    return embeds;
   },
 };

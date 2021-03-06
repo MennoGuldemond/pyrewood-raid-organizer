@@ -110,7 +110,7 @@ client.on('message', (message) => {
     if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
       return;
     }
-    const versionString = `The Raid Organizer bot current version is ${packageJson.version}`;
+    const versionString = `My current version is ${packageJson.version}`;
     message.channel.send(versionString);
   }
 });

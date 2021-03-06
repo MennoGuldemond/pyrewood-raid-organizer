@@ -106,6 +106,7 @@ client.on('message', (message) => {
           message.channel.send(allianceEmbeds[i]);
         }
       });
+    // ******** Version ********
   } else if (command === '!version') {
     if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
       return;

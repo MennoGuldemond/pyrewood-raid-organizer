@@ -9,7 +9,8 @@ const packageJson = require('./package.json');
 
 dotenv.config();
 const client = new Client();
-const isTestMode = false;
+const isTestMode = true;
+const prefix = '!';
 
 const channels = {
   c814826044283813988: 'Monday',
@@ -26,13 +27,14 @@ client.on('ready', () => {
 });
 
 client.on('message', (message) => {
-  if (message.content[0] !== '!') {
+  if (!message.content.startsWith(prefix) || message.author.bot) {
     return;
   }
-  const command = message.content.split(' ')[0].toLowerCase();
+  const arguments = message.content.slice(prefix.length).trim().split(' ');
+  const command = arguments.shift().toLowerCase();
 
   // ******** POST ********
-  if (command === '!post') {
+  if (command === 'post') {
     DriveReader.getRaidData()
       .catch((err) => {
         console.error('err:', err);
@@ -54,13 +56,11 @@ client.on('message', (message) => {
         }
       });
     // ******** SEARCH ********
-  } else if (command === '!search') {
+  } else if (command === 'search') {
     if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
       return;
     }
-    const arguments = message.content.split(' ');
-
-    if (arguments.length < 2) {
+    if (arguments.length < 1) {
       message.channel.send(
         'Please provide a raid to search for, like: "!search mc".'
       );
@@ -68,7 +68,7 @@ client.on('message', (message) => {
     }
 
     // Check if raid exists
-    let searchTerm = arguments.slice(1).join().replace(',', ' ');
+    let searchTerm = arguments[0];
     let found = false;
     Raids.all.forEach((raid) => {
       if (
@@ -107,7 +107,7 @@ client.on('message', (message) => {
         }
       });
     // ******** Version ********
-  } else if (command === '!version') {
+  } else if (command === 'version') {
     if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
       return;
     }

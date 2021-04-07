@@ -33,86 +33,12 @@ client.on('message', (message) => {
   const arguments = message.content.slice(prefix.length).trim().split(' ');
   const command = arguments.shift().toLowerCase();
 
-  // ******** POST ********
   if (command === 'post') {
-    DriveReader.getRaidData()
-      .catch((err) => {
-        console.error('err:', err);
-      })
-      .then((data) => {
-        let day = channels[`c${message.channel.id}`];
-        if (isTestMode === true) {
-          day = 'Thursday';
-        }
-        if (day) {
-          const hordeEmbeds = Overview.createEmbeds(data, day, 'Horde');
-          for (let i = 0; i < hordeEmbeds.length; i++) {
-            message.channel.send(hordeEmbeds[i]);
-          }
-          const allianceEmbeds = Overview.createEmbeds(data, day, 'Alliance');
-          for (let i = 0; i < allianceEmbeds.length; i++) {
-            message.channel.send(allianceEmbeds[i]);
-          }
-        }
-      });
-    // ******** SEARCH ********
+    handlePost(message, arguments);
   } else if (command === 'search') {
-    if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
-      return;
-    }
-    if (arguments.length < 1) {
-      message.channel.send(
-        'Please provide a raid to search for, like: "!search mc".'
-      );
-      return;
-    }
-
-    // Check if raid exists
-    let searchTerm = arguments[0];
-    let found = false;
-    Raids.all.forEach((raid) => {
-      if (
-        raid.key.toLowerCase() === searchTerm.toLowerCase() ||
-        raid.alternatives.includes(searchTerm.toLowerCase())
-      ) {
-        searchTerm = raid.key.toLowerCase();
-        found = true;
-      }
-    });
-    if (!found) {
-      message.channel.send(
-        `The raid you are looking for does not exist. ${
-          message.author
-        }\nPlease use one of the following search terms:\n${Raids.formattedAsString()}`
-      );
-      return;
-    }
-
-    DriveReader.getRaidData()
-      .catch((err) => {
-        console.error('err:', err);
-      })
-      .then((data) => {
-        const hordeEmbeds = Search.createEmbeds(data, searchTerm, 'Horde');
-        for (let i = 0; i < hordeEmbeds.length; i++) {
-          message.channel.send(hordeEmbeds[i]);
-        }
-        const allianceEmbeds = Search.createEmbeds(
-          data,
-          searchTerm,
-          'Alliance'
-        );
-        for (let i = 0; i < allianceEmbeds.length; i++) {
-          message.channel.send(allianceEmbeds[i]);
-        }
-      });
-    // ******** Version ********
+    return handleSearch(message, arguments);
   } else if (command === 'version') {
-    if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
-      return;
-    }
-    const versionString = `My current version is ${packageJson.version}`;
-    message.channel.send(versionString);
+    return handleVersion(message, arguments);
   }
 });
 
@@ -120,4 +46,83 @@ if (isTestMode === true) {
   client.login(process.env.BOT_TOKEN_TEST);
 } else {
   client.login(process.env.BOT_TOKEN);
+}
+
+function handlePost(message, arguments) {
+  DriveReader.getRaidData()
+    .catch((err) => {
+      console.error('err:', err);
+    })
+    .then((data) => {
+      let day = channels[`c${message.channel.id}`];
+      if (isTestMode === true) {
+        day = 'Thursday';
+      }
+      if (day) {
+        const hordeEmbeds = Overview.createEmbeds(data, day, 'Horde');
+        for (let i = 0; i < hordeEmbeds.length; i++) {
+          message.channel.send(hordeEmbeds[i]);
+        }
+        const allianceEmbeds = Overview.createEmbeds(data, day, 'Alliance');
+        for (let i = 0; i < allianceEmbeds.length; i++) {
+          message.channel.send(allianceEmbeds[i]);
+        }
+      }
+    });
+}
+
+function handleSearch(message, arguments) {
+  if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
+    return;
+  }
+  if (arguments.length < 1) {
+    message.channel.send(
+      'Please provide a raid to search for, like: "!search mc".'
+    );
+    return;
+  }
+
+  // Check if raid exists
+  let searchTerm = arguments[0];
+  let found = false;
+  Raids.all.forEach((raid) => {
+    if (
+      raid.key.toLowerCase() === searchTerm.toLowerCase() ||
+      raid.alternatives.includes(searchTerm.toLowerCase())
+    ) {
+      searchTerm = raid.key.toLowerCase();
+      found = true;
+    }
+  });
+  if (!found) {
+    message.channel.send(
+      `The raid you are looking for does not exist. ${
+        message.author
+      }\nPlease use one of the following search terms:\n${Raids.formattedAsString()}`
+    );
+    return;
+  }
+
+  DriveReader.getRaidData()
+    .catch((err) => {
+      console.error('err:', err);
+    })
+    .then((data) => {
+      const hordeEmbeds = Search.createEmbeds(data, searchTerm, 'Horde');
+      for (let i = 0; i < hordeEmbeds.length; i++) {
+        message.channel.send(hordeEmbeds[i]);
+      }
+      const allianceEmbeds = Search.createEmbeds(data, searchTerm, 'Alliance');
+      for (let i = 0; i < allianceEmbeds.length; i++) {
+        message.channel.send(allianceEmbeds[i]);
+      }
+    });
+}
+
+function handleVersion(message, arguments) {
+  if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
+    return;
+  }
+  const versionString = `My current version is ${packageJson.version}`;
+  message.channel.send(versionString);
 }

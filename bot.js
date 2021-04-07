@@ -9,7 +9,7 @@ const packageJson = require('./package.json');
 
 dotenv.config();
 const client = new Client();
-const isTestMode = true;
+const isTestMode = false;
 const prefix = '!';
 
 const channels = {

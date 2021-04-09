@@ -34,7 +34,7 @@ client.on('message', (message) => {
   const command = arguments.shift().toLowerCase();
 
   if (command === 'post') {
-    handlePost(message, arguments);
+    return handlePost(message, arguments);
   } else if (command === 'search') {
     return handleSearch(message, arguments);
   } else if (command === 'version') {

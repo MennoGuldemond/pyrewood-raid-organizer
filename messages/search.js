@@ -45,12 +45,15 @@ module.exports = {
       return x.type.toLowerCase() !== 'gdkp' && x.type.toLowerCase() !== 'sr';
     });
 
-    const descriptions = Formatter.getSearchDescriptions(
+    let descriptions = Formatter.getSearchDescriptions(
       gdkpData,
       srData,
       otherData,
       sortedByDay
     );
+
+    // Remove empty descriptions
+    descriptions = descriptions.filter((d) => d.length > 1);
 
     const embeds = [];
     for (let i = 0; i < descriptions.length; i++) {

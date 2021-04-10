@@ -4,12 +4,11 @@ const { Client } = require('discord.js');
 const DriveReader = require('./drive-reader');
 const Overview = require('./messages/overview');
 const Search = require('./messages/search');
-const Raids = require('./raids');
 const packageJson = require('./package.json');
 
 dotenv.config();
 const client = new Client();
-const isTestMode = false;
+const isTestMode = true;
 const prefix = '!';
 
 const channels = {
@@ -36,7 +35,7 @@ client.on('message', (message) => {
   if (command === 'post') {
     return handlePost(message, arguments);
   } else if (command === 'search') {
-    return handleSearch(message, arguments);
+    return Search.handleMessage(message, arguments, isTestMode);
   } else if (command === 'version') {
     return handleVersion(message, arguments);
   }
@@ -71,55 +70,7 @@ function handlePost(message, arguments) {
     });
 }
 
-function handleSearch(message, arguments) {
-  if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
-    return;
-  }
-  if (arguments.length < 1) {
-    message.channel.send(
-      'Please provide a raid to search for, like: "!search mc".'
-    );
-    return;
-  }
-
-  // Check if raid exists
-  let searchTerm = arguments[0];
-  let found = false;
-  Raids.all.forEach((raid) => {
-    if (
-      raid.key.toLowerCase() === searchTerm.toLowerCase() ||
-      raid.alternatives.includes(searchTerm.toLowerCase())
-    ) {
-      searchTerm = raid.key.toLowerCase();
-      found = true;
-    }
-  });
-  if (!found) {
-    message.channel.send(
-      `The raid you are looking for does not exist. ${
-        message.author
-      }\nPlease use one of the following search terms:\n${Raids.formattedAsString()}`
-    );
-    return;
-  }
-
-  DriveReader.getRaidData()
-    .catch((err) => {
-      console.error('err:', err);
-    })
-    .then((data) => {
-      const hordeEmbeds = Search.createEmbeds(data, searchTerm, 'Horde');
-      for (let i = 0; i < hordeEmbeds.length; i++) {
-        message.channel.send(hordeEmbeds[i]);
-      }
-      const allianceEmbeds = Search.createEmbeds(data, searchTerm, 'Alliance');
-      for (let i = 0; i < allianceEmbeds.length; i++) {
-        message.channel.send(allianceEmbeds[i]);
-      }
-    });
-}
-
-function handleVersion(message, arguments) {
+function handleVersion(message) {
   if (!isTestMode && message.channel.id != process.env.SEARCH_CHANNEL_ID) {
     return;
   }

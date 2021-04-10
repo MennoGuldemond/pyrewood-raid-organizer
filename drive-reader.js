@@ -8,7 +8,15 @@ module.exports = {
       return console.error('Error loading credentials file');
     }
     const auth = authorize(credentialsJson);
-    return fetchSheetsData(auth);
+    return fetchRaidSheetData(auth);
+  },
+  getCrafterData: async function (faction) {
+    if (!credentialsJson) {
+      return console.error('Error loading credentials file');
+    }
+    const isHorde = faction.toLowerCase() === 'horde';
+    const auth = authorize(credentialsJson);
+    return fetchCrafterSheetData(auth, isHorde);
   },
 };
 
@@ -31,11 +39,11 @@ function authorize(credentials) {
   return oAuth2Client;
 }
 
-async function fetchSheetsData(auth) {
+async function fetchRaidSheetData(auth) {
   const sheets = google.sheets({ version: 'v4', auth });
   const result = await sheets.spreadsheets.values
     .get({
-      spreadsheetId: '1zBLV3u8JanX-hmiGRgij3ERdyPUyLIa9TyPtbpEYsL8',
+      spreadsheetId: process.env.RAID_SPREADSHEET_ID,
       range: 'A:J',
     })
     .then((result) => {
@@ -64,4 +72,35 @@ async function fetchSheetsData(auth) {
     console.error('No data found.');
   }
   return raidData;
+}
+
+async function fetchCrafterSheetData(auth, isHorde) {
+  const sheets = google.sheets({ version: 'v4', auth });
+  const sheetId = isHorde
+    ? process.env.HORDE_CRAFTER_SPREADSHEET_ID
+    : process.env.ALLIANCE_CRAFTER_SPREADSHEET_ID;
+  const result = await sheets.spreadsheets.values
+    .get({
+      spreadsheetId: sheetId,
+      range: 'A:B',
+    })
+    .then((result) => {
+      return result;
+    });
+
+  const rows = result.data.values;
+  const crafterData = [];
+  if (rows.length) {
+    rows.map((row) => {
+      const rowData = {
+        item: row[0],
+        crafters: row[1],
+      };
+      crafterData.push(rowData);
+    });
+  } else {
+    console.error('No data found.');
+  }
+  crafterData.shift();
+  return crafterData;
 }

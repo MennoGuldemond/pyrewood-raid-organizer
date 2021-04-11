@@ -150,7 +150,7 @@ function createRaidEmbeds(data, raid, faction) {
 function crafterSearch(message, arguments) {
   if (arguments.length < 1) {
     message.channel.send(
-      'Please provide an item to search for, like: "!search blabla".'
+      'Please provide an item to search for, like: "!search windstrike gloves".'
     );
     return;
   }
@@ -160,12 +160,16 @@ function crafterSearch(message, arguments) {
       console.error(err);
     })
     .then((data) => {
-      const searchTerm = arguments[0].toLowerCase();
+      const searchQuery = arguments.reduce((acc, cur) => (acc += ` ${cur}`));
       const matches = data.filter((x) =>
-        x.item.toLowerCase().includes(searchTerm)
+        x.item.toLowerCase().includes(searchQuery)
       );
+
+      const embed = Formatter.getFactionEmbed('horde');
+      let description = '';
+
       if (matches.length === 1) {
-        let description = '';
+        embed.setTitle(`Horde crafters for: ${matches[0].item}`);
         if (matches[0].crafters && matches[0].crafters.length > 0) {
           const crafters = matches[0].crafters.split(',');
           for (let i = 0; i < crafters.length; i++) {
@@ -176,11 +180,19 @@ function crafterSearch(message, arguments) {
         } else {
           description = 'No crafters currently make this item.';
         }
-
-        const embed = Formatter.getFactionEmbed('horde');
-        embed.setTitle(`Horde crafters for: ${matches[0].item}`);
-        embed.setDescription(description);
-        return message.channel.send(embed);
+      } else if (matches.length > 1) {
+        embed.setTitle('Multiple items matched');
+        description = 'Please search for one of the items listed below:\n\n';
+        for (let i = 0; i < matches.length; i++) {
+          description += `${matches[i].item}\n`;
+        }
+      } else {
+        embed.setTitle('Item could not be found');
+        description =
+          'No items were found that matched your search.\nCheck your spelling or try searching for part of the name.';
       }
+
+      embed.setDescription(description);
+      return message.channel.send(embed);
     });
 }

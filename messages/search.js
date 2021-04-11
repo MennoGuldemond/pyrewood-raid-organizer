@@ -182,7 +182,7 @@ function crafterSearch(message, arguments) {
         }
       } else if (matches.length > 1) {
         embed.setTitle('Multiple items matched');
-        description = 'Please search for one of the items listed below:\n\n';
+        description = 'Are you looking for one of the items listed below?\n\n';
         for (let i = 0; i < matches.length; i++) {
           description += `${matches[i].item}\n`;
         }

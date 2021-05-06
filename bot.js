@@ -12,13 +12,13 @@ const isTestMode = false;
 const prefix = '!';
 
 const channels = {
-  c814826044283813988: 'Monday',
-  c814826058201038848: 'Tuesday',
-  c814826238283612200: 'Wednesday',
-  c814826251646664704: 'Thursday',
-  c814826263104978944: 'Friday',
-  c814826274442838076: 'Saturday',
-  c814826286018330644: 'Sunday',
+  c834162692721868862: 'Monday',
+  c834162723981754458: 'Tuesday',
+  c834162745451872318: 'Wednesday',
+  c834162759884079126: 'Thursday',
+  c834162770982600724: 'Friday',
+  c834162783297470464: 'Saturday',
+  c834162793875636325: 'Sunday',
 };
 
 client.on('ready', () => {

@@ -31,12 +31,9 @@ module.exports = {
 
 function raidSearch(message, arguments) {
   if (arguments.length < 1) {
-    message.channel
-      .send('Please provide a raid to search for, like: "!search mc".')
-      .then((newMessage) => {
-        message.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
-        newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
-      });
+    message.channel.send(
+      'Please provide a raid to search for, like: "!search mc".'
+    );
     return;
   }
 
@@ -53,16 +50,11 @@ function raidSearch(message, arguments) {
     }
   });
   if (!found) {
-    message.channel
-      .send(
-        `The raid you are looking for does not exist. ${
-          message.author
-        }\nPlease use one of the following search terms:\n${Raids.formattedAsString()}`
-      )
-      .then((newMessage) => {
-        message.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
-        newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
-      });
+    message.channel.send(
+      `The raid you are looking for does not exist. ${
+        message.author
+      }\nPlease use one of the following search terms:\n${Raids.formattedAsString()}`
+    );
     return;
   }
 
@@ -72,17 +64,12 @@ function raidSearch(message, arguments) {
     })
     .then((data) => {
       const hordeEmbeds = createRaidEmbeds(data, searchTerm, 'Horde');
-      message.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
       for (let i = 0; i < hordeEmbeds.length; i++) {
-        message.channel.send(hordeEmbeds[i]).then((newMessage) => {
-          newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
-        });
+        message.channel.send(hordeEmbeds[i]);
       }
       const allianceEmbeds = createRaidEmbeds(data, searchTerm, 'Alliance');
       for (let i = 0; i < allianceEmbeds.length; i++) {
-        message.channel.send(allianceEmbeds[i]).then((newMessage) => {
-          newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
-        });
+        message.channel.send(allianceEmbeds[i]);
       }
     });
 }

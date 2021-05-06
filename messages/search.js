@@ -18,20 +18,13 @@ module.exports = {
     if (isTestMode) {
       return crafterSearch(message, arguments);
     }
-    if (
-      message.channel.id != process.env.SEARCH_CHANNEL_ID ||
-      message.channel.id != process.env.HORDE_TRADE_CHANNEL_ID ||
-      message.channel.id != process.env.ALLIANCE_TRADE_CHANNEL_ID
-    ) {
-      return;
-    }
     switch (message.channel.id) {
       case process.env.SEARCH_CHANNEL_ID:
         return raidSearch(message, arguments);
       case process.env.HORDE_TRADE_CHANNEL_ID:
         return crafterSearch(message, arguments);
       default:
-        break;
+        return;
     }
   },
 };

@@ -34,8 +34,8 @@ function raidSearch(message, arguments) {
     message.channel
       .send('Please provide a raid to search for, like: "!search mc".')
       .then((newMessage) => {
-        message.delete({ timeout: process.env.SEACH_DELETE_TIMEOUT });
-        newMessage.delete({ timeout: process.env.SEACH_DELETE_TIMEOUT });
+        message.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
+        newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
       });
     return;
   }
@@ -60,8 +60,8 @@ function raidSearch(message, arguments) {
         }\nPlease use one of the following search terms:\n${Raids.formattedAsString()}`
       )
       .then((newMessage) => {
-        message.delete({ timeout: process.env.SEACH_DELETE_TIMEOUT });
-        newMessage.delete({ timeout: process.env.SEACH_DELETE_TIMEOUT });
+        message.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
+        newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
       });
     return;
   }
@@ -72,16 +72,16 @@ function raidSearch(message, arguments) {
     })
     .then((data) => {
       const hordeEmbeds = createRaidEmbeds(data, searchTerm, 'Horde');
-      message.delete({ timeout: process.env.SEACH_DELETE_TIMEOUT });
+      message.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
       for (let i = 0; i < hordeEmbeds.length; i++) {
         message.channel.send(hordeEmbeds[i]).then((newMessage) => {
-          newMessage.delete({ timeout: process.env.SEACH_DELETE_TIMEOUT });
+          newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
         });
       }
       const allianceEmbeds = createRaidEmbeds(data, searchTerm, 'Alliance');
       for (let i = 0; i < allianceEmbeds.length; i++) {
         message.channel.send(allianceEmbeds[i]).then((newMessage) => {
-          newMessage.delete({ timeout: process.env.SEACH_DELETE_TIMEOUT });
+          newMessage.delete({ timeout: process.env.SEARCH_DELETE_TIMEOUT });
         });
       }
     });

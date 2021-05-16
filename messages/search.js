@@ -155,7 +155,7 @@ function crafterSearch(message, arguments) {
     .then((data) => {
       const searchQuery = arguments.reduce((acc, cur) => (acc += ` ${cur}`));
       const matches = data.filter((x) =>
-        x.item.toLowerCase().includes(searchQuery)
+        x.item.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
       const embed = Formatter.getFactionEmbed('horde');

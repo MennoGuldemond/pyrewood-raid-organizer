@@ -164,7 +164,7 @@ function crafterSearch(message, arguments, faction) {
       let description = '';
 
       if (matches.length === 1) {
-        embed.setTitle(`Horde crafters for: ${matches[0].item}`);
+        embed.setTitle(`Crafters for: ${matches[0].item}`);
         if (matches[0].crafters && matches[0].crafters.length > 0) {
           const crafters = matches[0].crafters.split(',');
           for (let i = 0; i < crafters.length; i++) {

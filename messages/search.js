@@ -22,7 +22,9 @@ module.exports = {
       case process.env.SEARCH_CHANNEL_ID:
         return raidSearch(message, arguments);
       case process.env.HORDE_TRADE_CHANNEL_ID:
-        return crafterSearch(message, arguments);
+        return crafterSearch(message, arguments, 'horde');
+      case process.env.ALLIANCE_TRADE_CHANNEL_ID:
+        return crafterSearch(message, arguments, 'alliance');
       default:
         return;
     }
@@ -140,7 +142,7 @@ function createRaidEmbeds(data, raid, faction) {
   return embeds;
 }
 
-function crafterSearch(message, arguments) {
+function crafterSearch(message, arguments, faction) {
   if (arguments.length < 1) {
     message.channel.send(
       'Please provide an item to search for, like: "!search windstrike gloves".'
@@ -148,7 +150,7 @@ function crafterSearch(message, arguments) {
     return;
   }
 
-  DriveReader.getCrafterData('horde')
+  DriveReader.getCrafterData(faction)
     .catch((err) => {
       console.error(err);
     })
@@ -158,7 +160,7 @@ function crafterSearch(message, arguments) {
         x.item.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
-      const embed = Formatter.getFactionEmbed('horde');
+      const embed = Formatter.getFactionEmbed(faction);
       let description = '';
 
       if (matches.length === 1) {

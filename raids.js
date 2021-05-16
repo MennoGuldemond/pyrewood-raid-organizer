@@ -16,6 +16,39 @@ module.exports = {
       alternatives: ["temple of ahn'qiraj"],
     },
     { key: 'Nax', name: 'Naxxramas', alternatives: ['naxxramas', 'naxx'] },
+    { key: 'Kara', name: 'Karazhan', alternatives: ['karazhan'] },
+    {
+      key: 'Gruul',
+      name: "Gruul's Lair",
+      alternatives: ["gruul's lair", 'gruuls lair', 'grull', 'grulls'],
+    },
+    {
+      key: 'Mag',
+      name: "Magtheridon's Lair",
+      alternatives: ["magtheridon's lair", 'magtheridons lair', 'magtheridons'],
+    },
+    {
+      key: 'SSC',
+      name: 'Serpentshrine Cavern',
+      alternatives: ['serpentshrine cavern', 'serpentshrine'],
+    },
+    {
+      key: 'TK',
+      name: 'Tempest Keep',
+      alternatives: ['tempest keep', 'tempest'],
+    },
+    {
+      key: 'Hyjal',
+      name: 'Hyjal Summit',
+      alternatives: ['hyjal summit', 'hyjal'],
+    },
+    { key: 'BT', name: 'Black Temple', alternatives: ['black temple'] },
+    { key: 'ZA', name: "Zul'Aman", alternatives: ["zul'aman", 'zulaman'] },
+    {
+      key: 'Sunwell',
+      name: 'Sunwell Plateau',
+      alternatives: ['sunwell Plateau', 'sun'],
+    },
   ],
   formattedAsString: function () {
     let text = '';

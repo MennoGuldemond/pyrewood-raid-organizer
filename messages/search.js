@@ -156,9 +156,11 @@ function crafterSearch(message, arguments, faction) {
     })
     .then((data) => {
       const searchQuery = arguments.reduce((acc, cur) => (acc += ` ${cur}`));
-      const matches = data.filter((x) =>
-        x.item.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const matches = data.filter((x) => {
+        if (x.item) {
+          return x.item.toLowerCase().includes(searchQuery.toLowerCase());
+        }
+      });
 
       const embed = Formatter.getFactionEmbed(faction);
       let description = '';
